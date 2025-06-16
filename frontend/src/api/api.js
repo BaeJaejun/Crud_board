@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/api", // 실제 요청은 /api/posts, /api/login 등으로 구성됨
+  baseURL: "http://localhost:5000/api", // 실제 요청은 /api/posts, /api/login 등으로 구성됨
   timeout: 5000,
   headers: {
     "Content-Type": "application/json",
