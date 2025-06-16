@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import { signupUser } from "../api/api";
 
 function Signup() {
   const [username, setUsername] = useState("");
@@ -10,14 +11,27 @@ function Signup() {
 
   const navigate = useNavigate();
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
+
+    // 비밀번호 일치 검사
     if (password !== confirmPassword) {
       alert("비밀번호가 일치하지 않습니다.");
       return;
     }
-    alert(`회원가입 시도: ${username}/${password}`);
-    navigate("/login"); // 회원가입 후 로그인 페이지로 이동
+
+    try {
+      await signupUser({ username, password });
+      alert("회원가입 성공! 로그인 페이지로 이동합니다.");
+      navigate("/login");
+    } catch (err) {
+      console.error("회원가입 실패:", err);
+      if (err.response?.status === 409) {
+        alert("이미 존재하는 사용자명입니다.");
+      } else {
+        alert("회원가입에 실패했습니다.");
+      }
+    }
   };
 
   return (

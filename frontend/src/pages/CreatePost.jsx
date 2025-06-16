@@ -2,27 +2,38 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import { createPost } from "../api/api";
 
 function CreatePost({ posts, setPosts }) {
   const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newPost = {
-      id: posts.length + 1, // 실제 서비스에서는 uuid 또는 DB id 사용
-      title,
-      author,
-      date: new Date().toISOString().split("T")[0], // 오늘 날짜 yyyy-mm-dd
-      comments: 0,
-      content,
-    };
+    const author = localStorage.getItem("username"); // 로그인된 사용자명
 
-    setPosts([...posts, newPost]); // 새 글 추가
-    navigate("/"); // 목록으로 이동
+    // 유효성 검사
+    if (!title.trim() || !content.trim())
+      return alert("제목과 내용을 입력해주세요.");
+    if (!author) return alert("로그인이 필요합니다.");
+
+    try {
+      const res = await createPost({
+        title,
+        content,
+        author, // 작성자는 따로 입력받지 않음
+        date: new Date().toISOString().split("T")[0], // 오늘 날짜 yyyy-mm-dd
+      });
+
+      const newPost = res.data;
+      setPosts([...posts, newPost]); // 로컬 상태 업데이트
+      navigate("/"); // 목록 페이지로 이동
+    } catch (err) {
+      console.error("게시글 등록 실패:", err);
+      alert("게시글 등록에 실패했습니다.");
+    }
   };
 
   return (
@@ -36,14 +47,6 @@ function CreatePost({ posts, setPosts }) {
             placeholder="제목"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full border p-2 rounded"
-            required
-          />
-          <input
-            type="text"
-            placeholder="작성자"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
             className="w-full border p-2 rounded"
             required
           />

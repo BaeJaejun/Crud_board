@@ -1,19 +1,27 @@
 // src/pages/PostDetail.jsx
 // 게시글 상세 내용을 보여주는 페이지 컴포넌트
-
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import CommentBox from "../components/CommentBox";
+import { fetchPostById, addCommentToPost } from "../api/api";
 
 function PostDetail({ posts }) {
   const { id } = useParams(); // URL에서 post ID 추출
+  const [post, setPost] = useState(null); // 게시글 내용
+  const [commentList, setCommentList] = useState([]);
 
-  // posts 배열에서 현재 id에 해당하는 게시글 찾기
-  const post = posts.find((p) => String(p.id) === id);
-
-  // 댓글 상태 로컬에서 별도로 관리 (초기값: 게시글의 comments 배열)
-  const [commentList, setCommentList] = useState(post?.comments || []);
+  // 게시글 불러오기
+  useEffect(() => {
+    fetchPostById(id)
+      .then((res) => {
+        setPost(res.data);
+        setCommentList(res.data.comments || []);
+      })
+      .catch((err) => {
+        console.error("게시글 조회 실패:", err);
+      });
+  }, [id]);
 
   // 해당 ID의 게시글이 없는 경우
   if (!post) {
@@ -21,15 +29,19 @@ function PostDetail({ posts }) {
   }
 
   //댓글 등록 처리 함수
-  const handleAddComment = ({ author, content }) => {
-    const newComment = {
-      id: commentList.length + 1, // 임시 ID
-      author,
-      content,
-    };
+  const handleAddComment = async ({ author, content }) => {
+    try {
+      const res = await addCommentToPost(id, { author, content });
 
-    // 댓글 목록에 추가
-    setCommentList([...commentList, newComment]);
+      // 서버에서 등록된 댓글 반환한다고 가정 (id 포함)
+      const newComment = res.data;
+
+      // 로컬 상태 업데이트
+      setCommentList([...commentList, newComment]);
+    } catch (err) {
+      console.error("댓글 등록 실패:", err);
+      alert("댓글 등록에 실패했습니다.");
+    }
   };
 
   return (
@@ -67,7 +79,10 @@ function PostDetail({ posts }) {
         </ul>
 
         {/* 댓글 입력 컴포넌트 사용 */}
-        <CommentBox onSubmit={handleAddComment} />
+        <CommentBox
+          onSubmit={handleAddComment}
+          author={localStorage.getItem("username")}
+        />
       </div>
     </div>
   );

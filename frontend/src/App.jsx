@@ -1,6 +1,5 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useState, useEffect } from "react";
+import { fetchPosts } from "./api/api";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 //import "./App.css";
 
@@ -11,33 +10,15 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
 function App() {
-  // 더미 게시글 데이터 (백엔드 연결 전까지 사용)
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: "첫 글",
-      author: "홍길동",
-      date: "2025-06-15",
-      content:
-        "내용용내용용요용내용용요용내용용요용내용용요용내용용요용요용내용용요용내용용요용내용용요용내용용요용내용용요용",
-      comments: [
-        // 배열로 관리
-        { id: 1, author: "댓글러", content: "좋은 글요!" },
-        { id: 2, author: "또다른댓글러", content: "감사요." },
-      ],
-    },
-    {
-      id: 2,
-      title: "두 번째 글",
-      author: "김철수",
-      date: "2025-06-14",
-      content: "내용용요용22",
-      comments: [
-        { id: 1, author: "댓글쓴이", content: "좋은 글이네요!" },
-        { id: 2, author: "또다른사람", content: "동감합니다." },
-      ],
-    },
-  ]);
+  // 게시글 목록을 상태로 관리 (초기값은 빈 배열)
+  const [posts, setPosts] = useState([]);
+
+  // 컴포넌트가 처음 마운트될 때 게시글 목록을 서버에서 불러옴
+  useEffect(() => {
+    fetchPosts()
+      .then((res) => setPosts(res.data))
+      .catch((err) => console.error("불러오기 실패:", err));
+  }, []);
 
   return (
     <BrowserRouter>

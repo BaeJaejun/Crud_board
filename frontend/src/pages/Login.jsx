@@ -2,17 +2,28 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import { loginUser } from "../api/api";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // TODO: 실제 로그인 API 요청 추가 예정
-    alert(`로그인 시도: ${username}/${password}`);
-    navigate("/"); // 로그인 성공 시 메인으로 이동
+
+    try {
+      const res = await loginUser({ username, password });
+
+      // 로그인 성공 시 사용자 이름 저장
+      localStorage.setItem("username", res.data.username); // 또는 res.data.user 등 백엔드 응답에 따라 조정
+
+      alert("로그인 성공!");
+      navigate("/"); // 홈으로 이동
+    } catch (err) {
+      console.error("로그인 실패:", err);
+      alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+    }
   };
 
   return (
