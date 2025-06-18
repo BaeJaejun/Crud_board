@@ -1,10 +1,9 @@
 // src/pages/Signup.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
 import { signupUser } from "../api/api";
 
-function Signup() {
+function Signup({ onSignup }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -21,9 +20,14 @@ function Signup() {
     }
 
     try {
-      await signupUser({ username, password });
-      alert("회원가입 성공! 로그인 페이지로 이동합니다.");
-      navigate("/login");
+      const res = await signupUser({ username, password });
+
+      // 회원가입 성공 시 username 저장 및 onSignup 호출
+      localStorage.setItem("username", res.data.username);
+      onSignup(res.data.username);
+
+      alert("회원가입 성공! 메인 페이지로 이동합니다.");
+      navigate("/");
     } catch (err) {
       console.error("회원가입 실패:", err);
       if (err.response?.status === 409) {
@@ -36,7 +40,6 @@ function Signup() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded shadow">
         <h2 className="text-xl font-bold mb-4">회원가입</h2>
         <form onSubmit={handleSignup} className="space-y-4">

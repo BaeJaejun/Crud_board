@@ -1,7 +1,6 @@
 // src/pages/CreatePost.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
 import { createPost } from "../api/api";
 
 function CreatePost({ posts, setPosts }) {
@@ -38,7 +37,6 @@ function CreatePost({ posts, setPosts }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <div className="max-w-2xl mx-auto p-6 bg-white shadow mt-10 rounded">
         <h2 className="text-xl font-bold mb-4">새 글 작성</h2>
         <form onSubmit={handleSubmit} className="space-y-4">

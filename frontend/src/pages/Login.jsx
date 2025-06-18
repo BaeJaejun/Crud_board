@@ -1,10 +1,9 @@
 // src/pages/Login.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
 import { loginUser } from "../api/api";
 
-function Login() {
+function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -17,7 +16,7 @@ function Login() {
 
       // 로그인 성공 시 사용자 이름 저장
       localStorage.setItem("username", res.data.username); // 또는 res.data.user 등 백엔드 응답에 따라 조정
-
+      onLogin(res.data.username);
       alert("로그인 성공!");
       navigate("/"); // 홈으로 이동
     } catch (err) {
@@ -28,7 +27,6 @@ function Login() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded shadow">
         <h2 className="text-xl font-bold mb-4">로그인</h2>
         <form onSubmit={handleLogin} className="space-y-4">

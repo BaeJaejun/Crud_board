@@ -1,5 +1,4 @@
 // src/pages/BoardList.jsx
-import Header from "../components/Header";
 import PostCard from "../components/PostCard";
 import { Link } from "react-router-dom";
 
@@ -7,7 +6,6 @@ import { Link } from "react-router-dom";
 function BoardList({ posts }) {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       {/* 전체 페이지 레이아웃: 중앙 정렬 + 여백(padding) */}
       <div className="max-w-3xl mx-auto p-6">
         {/* 페이지 제목 */}

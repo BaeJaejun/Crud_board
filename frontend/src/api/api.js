@@ -7,6 +7,7 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, // 세션 쿠키 전송
 });
 
 // 게시글 목록 가져오기
@@ -23,6 +24,12 @@ export const deletePost = (id) => api.delete(`/posts/${id}`);
 
 // 로그인
 export const loginUser = (data) => api.post("/users/login", data);
+
+// 로그아웃
+export const logoutUser = () => api.post("/users/logout");
+
+// 로그인 상태 확인 (세션 검사용)
+export const loginMe = () => api.post("/users/me");
 
 // 회원가입
 export const signupUser = (data) => api.post("/users/signup", data);
