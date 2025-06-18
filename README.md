@@ -21,6 +21,7 @@ crud_board/
 ├── backend/ # Node.js + Express 기반 백엔드
 │ ├── routes/ # RESTful API 라우트
 │ ├── controllers/ # 요청 처리 로직
+│ ├── middleware/ # 로그인 인증- session 로그인
 │ ├── models/ # 데이터 모델 (예: JSON, MongoDB 등)
 │ ├── server.js # 서버 실행 진입점
 │ └── ... # 필요한 기타 설정
