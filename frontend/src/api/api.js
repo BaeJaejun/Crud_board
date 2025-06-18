@@ -18,14 +18,21 @@ export const fetchPostById = (id) => api.get(`/posts/${id}`);
 // 게시글 생성
 export const createPost = (data) => api.post("/posts", data);
 
+// 게시글 삭제
+export const deletePost = (id) => api.delete(`/posts/${id}`);
+
 // 로그인
-export const loginUser = (data) => api.post("/login", data);
+export const loginUser = (data) => api.post("/users/login", data);
 
 // 회원가입
-export const signupUser = (data) => api.post("/signup", data);
+export const signupUser = (data) => api.post("/users/signup", data);
 
 // 댓글 등록
 export const addCommentToPost = (postId, commentData) =>
   api.post(`/posts/${postId}/comments`, commentData);
+
+// 댓글 삭제
+export const deleteComment = (postId, commentId) =>
+  api.delete(`/posts/${postId}/comments/${commentId}`);
 
 export default api;

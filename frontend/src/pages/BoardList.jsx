@@ -18,7 +18,7 @@ function BoardList({ posts }) {
           posts.map((post) => (
             // 각 게시글을 PostCard 컴포넌트로 렌더링
             // key는 React가 각 요소를 구분하는 데 필요
-            <PostCard key={post.id} post={post} />
+            <PostCard key={post._id} post={post} />
           ))
         ) : (
           <p className="text-gray-500">게시글이 없습니다.</p>

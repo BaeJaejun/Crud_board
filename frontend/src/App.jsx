@@ -24,7 +24,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<BoardList posts={posts} />} />
-        <Route path="/post/:id" element={<PostDetail posts={posts} />} />
+        <Route path="/post/:id" element={<PostDetail />} />
         <Route
           path="/new"
           element={<CreatePost posts={posts} setPosts={setPosts} />}

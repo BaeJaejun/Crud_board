@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 
-function CommentBox({ onSubmit }) {
+function CommentBox({ onSubmit, author }) {
   // 입력값 상태: 작성자, 댓글 내용
   const [commentContent, setCommentContent] = useState("");
 

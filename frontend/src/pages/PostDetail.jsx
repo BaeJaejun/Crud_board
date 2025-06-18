@@ -1,15 +1,18 @@
 // src/pages/PostDetail.jsx
 // 게시글 상세 내용을 보여주는 페이지 컴포넌트
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import CommentBox from "../components/CommentBox";
 import { fetchPostById, addCommentToPost } from "../api/api";
+import { deletePost } from "../api/api";
+import { deleteComment } from "../api/api";
 
-function PostDetail({ posts }) {
+function PostDetail() {
   const { id } = useParams(); // URL에서 post ID 추출
   const [post, setPost] = useState(null); // 게시글 내용
   const [commentList, setCommentList] = useState([]);
+  const navigate = useNavigate();
 
   // 게시글 불러오기
   useEffect(() => {
@@ -44,6 +47,30 @@ function PostDetail({ posts }) {
     }
   };
 
+  const handleDeletePost = async () => {
+    if (!window.confirm("정말 삭제하시겠습니까?")) return;
+    try {
+      await deletePost(id);
+      alert("삭제 완료!");
+      navigate("/"); // 홈으로 이동
+    } catch (err) {
+      console.error("삭제 실패:", err);
+      alert("게시글 삭제에 실패했습니다.");
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("댓글을 정말 삭제하시겠습니까?")) return;
+    try {
+      await deleteComment(id, commentId);
+      // 로컬 상태에서 해당 댓글 제거
+      setCommentList(commentList.filter((c) => c._id !== commentId));
+    } catch (err) {
+      console.error("댓글 삭제 실패:", err);
+      alert("댓글 삭제에 실패했습니다.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 공통 헤더 */}
@@ -55,11 +82,21 @@ function PostDetail({ posts }) {
         <h1 className="text-2xl font-bold mb-2">{post.title}</h1>
 
         {/* 작성자 및 작성일 */}
-        <div className="text-gray-500 text-sm mb-4">
+        <span className="text-gray-500 text-sm mb-4">
           작성자: {post.author} | {post.date} | 💬 댓글 {commentList.length}개
-        </div>
-
+        </span>
+        {/* 삭제 버튼 */}
+        {post.author === localStorage.getItem("username") && (
+          <button
+            onClick={handleDeletePost}
+            className="text-red-500 hover:underline ml-4"
+          >
+            게시글 삭제
+          </button>
+        )}
         {/* 게시글 본문 */}
+        <hr className="my-6" />
+
         <p className="text-gray-800 leading-relaxed">{post.content}</p>
 
         {/* 댓글 구역 */}
@@ -71,9 +108,19 @@ function PostDetail({ posts }) {
         {/* 댓글 목록 */}
         <ul className="space-y-2 mb-4">
           {commentList.map((c) => (
-            <li key={c.id} className="p-2">
-              <span className="font-medium">{c.author}:</span> {c.content}
-              <hr className="border-gray-200" />
+            <li key={c._id} className="p-2 flex justify-between items-start">
+              <div>
+                <span className="font-medium">{c.author} :</span> {c.content}
+              </div>
+              {/* localStorage의 currentUser와 댓글의 author가 같을 때만 삭제 버튼 표시 */}
+              {c.author === localStorage.getItem("username") && (
+                <button
+                  onClick={() => handleDeleteComment(c._id)}
+                  className="text-red-500 hover:underline ml-4"
+                >
+                  삭제
+                </button>
+              )}
             </li>
           ))}
         </ul>

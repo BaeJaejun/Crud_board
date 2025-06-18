@@ -7,7 +7,7 @@ function PostCard({ post }) {
     // 카드 스타일: 테두리, 아래쪽 간격, 그림자, 패딩, 둥근 모서리
     <div className="border rounded-lg p-4 mb-4 shadow hover:bg-gray-200 transition">
       {/* 제목: 클릭 시 해당 게시글 상세페이지로 이동 */}
-      <Link to={`/post/${post.id}`}>
+      <Link to={`/post/${post._id}`}>
         <h2 className="text-xl font-semibold text-black-600 hover:underline">
           {post.title}
         </h2>
